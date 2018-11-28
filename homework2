@@ -1,0 +1,30 @@
+<nav>
+  <ul>
+    <li><a href="#service">услуги</a></li>
+    <li><a href="#devices">устройства</a></li>
+    <li><a href="/comments.html">отзывы</a></li>
+    <li><a href="/contact.html">связаться с нами</a></li>
+  </ul>
+</nav>
+<figure>
+  <img src="http://pngimg.com/uploads/soviet_union/soviet_union_PNG52.png" alt="Логотип" style="width: 50px"/>
+  <figcapture><p>Логотип</p></figcapture>
+</figure>
+<section id="service"><h4>Наши услуги</h4>
+  <ul>
+    <li>замена экрана</li>
+    <li>замена динамика</li>
+    <li>замена корпуса</li>
+  </ul>
+  <a href="/price.xlsx">Прайс-лист</a>
+</section>
+<section id=devices>
+  <h4>Устройства, которые мы ремонтируем</h4>
+  <ul>
+    <li>iPhone</li>
+    <li>Samsung</li>
+    <li>HTC</li>
+    <li>Xiaomi</li>
+    <li>LG</li>
+  </ul>
+</section>
