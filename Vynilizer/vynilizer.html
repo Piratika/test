@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>AJAX</title>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/x-icon" href="https://i.stack.imgur.com/oh6VZ.png?s=32&g=1" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<style>
+		div.vinil {
+			display: block;
+			position: absolute;
+			width: 500px;
+			height: 400px;
+			border: 1px solid #000;
+			background-image: url(./Base.png);
+			background-size: cover;
+		}
+
+		.button {
+			position: absolute;
+			background-image: url(./Button.png);
+			background-size: cover;
+			width: 80px;
+			height: 80px;
+			top: 10%;
+			right: 10%;
+		}
+
+		.button div {
+			position: absolute;
+			background-image: url(./Button.png);
+			background-position: 100%;
+			background-size: cover;
+			width: 80px;
+			height: 80px;
+			top: -2%;
+			right: 20%;
+			z-index: 15;
+			opacity: 0;
+		}
+
+		.button div.active {
+			opacity: 1;
+		}
+
+		.disk {
+			position: absolute;
+			background-image: url(./1.png);
+			background-size: cover;
+			width: 350px;
+			height: 350px;
+			top: 5%;
+			left: 2%;
+			z-index: 5;
+		}
+
+		.disk, svg {
+			-webkit-animation-name: rotate;
+			-webkit-animation-duration: 3s;
+			-webkit-animation-timing-function: linear;
+			-webkit-animation-iteration-count: infinite;
+			animation: rotate 3s linear infinite;
+			animation-play-state: paused;
+		}
+
+		.arrow {
+			position: absolute;
+			background-image: url(./3.png);
+			background-size: contain;
+			width: 50px;
+			height: 200px;
+			left: 70%;
+			top: 70%;
+			z-index: 15;
+			transform-origin: 0 35px;
+			transform: rotate(90deg);
+			animation-name: rotateArrow;
+			animation-timing-function: linear;
+			animation-iteration-count: infinite;
+			animation-play-state: paused;
+		}
+
+		@keyframes rotate {
+			from {
+				transform: rotate(0deg);
+			}
+			to {
+				transform: rotate(360deg);
+			}
+		}
+
+		@keyframes rotateArrow {
+			from {
+				transform: rotate(90deg);
+			}
+			to {
+				transform: rotate(122deg);
+			}
+		}
+
+		label,
+		select {
+			z-index: 15;
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			padding: 5px;
+			background-color: cadetblue;
+			border: none;
+		}
+
+		#tracktime {
+			color: aliceblue;
+		}
+
+		svg {
+			position: absolute;
+			z-index: 10;
+			top: -55px;
+			left: -65px;
+		}
+		
+		text {
+			position: absolute;
+			top: 10%;
+			left: 10%;
+		}
+		text {
+			position: absolute;
+			fill: white;
+			font-family: Franklin Gothic, sans-serif;
+			font-weight: 900;
+			text-transform: uppercase;
+			letter-spacing: 4pt;
+			opacity: 0.5;
+		}
+
+	</style>
+	<script>
+		const formatTime = str => (str - str % 60) / 60 + ':' + str % 60;
+		$(document).ready(function () {
+			// переключение кнопки и анимации
+			const func = () => {
+				$(".button div").toggleClass("active");
+				$(".disk").css("animation-play-state") === 'paused' ? $(".disk, svg").css("animation-play-state", "running") : $(".disk, svg").css("animation-play-state", "paused");
+			}
+			// варианты треков
+			var songs = ['Sting – Englishman In New York.mp3', 'Ленинград – Кабриолет.mp3', 'Vaya Con Dios – Nah Neh Nah.mp3', 'Merk and Kremont - Sad story out of luck.mp3'];
+			songs.forEach((e, i) => $("select").append(`<option value=${i}>` + e + '</option>'));
+			// создание плеера
+			var player = new Audio('./' + songs[0]); // Создаём новый элемент Audio
+			$('textPath').text(songs[0].slice(0,-4));
+			const trackAudio = () => {
+				//$(".arrow")[0].style.webkitAnimationDuration = player.duration + 's';
+				$(".arrow")[0].style.transform = 'rotate(' + (player.currentTime / player.duration * 32 + 90) + 'deg)';
+				$('#tracktime').text(formatTime(Math.floor(player.currentTime)));
+			}
+			player.ontimeupdate = trackAudio;
+			player.addEventListener('ended', function () { // слушаем окончание трека
+				playing = false;
+				func();
+			});
+
+			$(".disk").click(e => console.dir(e));
+
+			$("select").change(e => {
+				$(".arrow").css("animation-play-state", "unset").css("animation-play-state", "running");
+				var currentTrack = songs[e.target.selectedOptions[0].value];
+				player.src = './' + currentTrack;
+				player.preload = 'auto';
+				player.ended;
+				$('textPath').text(currentTrack.slice(0,-4));
+				$(".button div").hasClass("active") ? player.play() : player.pause();
+			});
+
+			// переключение воспроизведения
+			function playPause() {
+				if (playing) {
+					player.pause();
+				} else {
+					player.play();
+				}
+				playing = !playing;
+			}
+			var playing = false;
+
+			$(".button div").click(() => {
+				func();
+				playPause();
+			})
+		})
+	</script>
+	<script src="2702.js"></script>
+</head>
+
+<body>
+	<div class="vinil">
+		<div class="button">
+			<div class="button"></div>
+		</div>
+		<div class="disk"></div>
+		<div class="arrow"></div>
+		<span id="tracktime">0:0</span>
+		<select></select>
+		<svg viewBox="0 0 100 100">
+			<defs>
+				<path d='M 0,50 a 50,50 0 1,1 0,1 z' id='textcircle' />
+			</defs>
+			<text dy="27" font-size="5" textLength="313">
+				<textPath xlink:href="#textcircle">
+				</textPath>
+			</text>
+		</svg>
+	</div>
+
+
+</body>
+
+</html>
